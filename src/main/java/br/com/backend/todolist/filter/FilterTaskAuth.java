@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import br.com.backend.todolist.user.IUserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,20 +31,13 @@ public class FilterTaskAuth extends OncePerRequestFilter {
             byte[] authDecode = Base64.getDecoder().decode(authEncoded);
             var authString = new String(authDecode);
             String[] credentials = authString.split(":");
-            String username = credentials[0];
-            String password = credentials[1];
+            String username = credentials[0];            
 
             var user = this.userRepository.findByUsername(username);
             if (user == null) {
                 response.sendError(401);
             } else {
-                var passwordVerify = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
-                if (passwordVerify.verified) {
-                    request.setAttribute("idUser", user.getId());
-                    filterChain.doFilter(request, response);
-                } else {
-                    response.sendError(401);
-                }
+                filterChain.doFilter(request, response);
             }
         } else {
             filterChain.doFilter(request, response);
