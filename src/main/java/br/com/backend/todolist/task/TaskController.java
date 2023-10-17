@@ -25,27 +25,6 @@ public class TaskController {
     @Autowired
     private ITaskRepository taskRepository;
 
-    @PostMapping("/")
-    public ResponseEntity create(@RequestBody TaskModel taskModel, HttpServletRequest httpServletRequest) {
-
-        var idUser = httpServletRequest.getAttribute("idUser");
-        taskModel.setIdUser((UUID) idUser);
-
-        var currentDate = LocalDateTime.now();
-        if (currentDate.isAfter(taskModel.getStartAt()) || currentDate.isAfter(taskModel.getEndAt())) {
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-                    .body("data de inicio/termino deve ser maior do que a data atual.");
-        }
-
-        if (taskModel.getStartAt().isAfter(taskModel.getEndAt())) {
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-                    .body("data de inicio deve ser menor do que a data de termino.");
-        }
-
-        var taskCreated = this.taskRepository.save(taskModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskCreated);
-    }
-
     @GetMapping("/")
     public List<TaskModel> list(HttpServletRequest httpServletRequest) {
 
@@ -54,23 +33,4 @@ public class TaskController {
         return tasks;
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity update(@RequestBody TaskModel taskModel, HttpServletRequest httpServletRequest,
-            @PathVariable UUID id) {
-
-        var task = this.taskRepository.findById(id).orElse(null);
-        if (task == null){
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-            .body("tarefa nao encontrada.");
-        }
-
-        var idUser = httpServletRequest.getAttribute("idUser");
-        if (!task.getIdUser().equals(idUser)){
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-            .body("usuario nao tem permissao para alterar essa tarefa.");
-        }
-        Utils.copyNonNullProperties(taskModel, task);
-        var taskUpdated = this.taskRepository.save(task);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(taskUpdated);
-    }
 }
