@@ -13,7 +13,7 @@ public class UserModel {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_usuario", nullable = false)
-    private Integer cod_usuario;
+    private int cod_usuario;
 
     @Column(name = "nome", nullable = false)
     private String nome;

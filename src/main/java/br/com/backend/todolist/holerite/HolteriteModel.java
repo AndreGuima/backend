@@ -1,4 +1,4 @@
-package br.com.backend.todolist.cargo;
+package br.com.backend.todolist.holerite;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
-@Entity(name = "Cargos")
-public class CargoModel {
+@Entity(name = "Holerite")
+public class HolteriteModel {
     
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo_cargo", nullable = false)
